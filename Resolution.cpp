@@ -157,7 +157,7 @@ TH1D* TailCatcher(TTree* total_tree, TTree* HCal_tree, Double_t energy, Double_t
 
     return h_TotalEdep;
 }
-void Resolution(std::string particle = "e-", Double_t energy = 1.0)
+Double_t Resolution(std::string particle = "e-", Double_t energy = 1.0)
 {   
     Bool_t EnableTailCatcher = kFALSE; // Tail Catcher used for hadrons
     Bool_t ECal_weight = kTRUE; // Weighting procedure used for hadrons
@@ -239,4 +239,6 @@ void Resolution(std::string particle = "e-", Double_t energy = 1.0)
     res_caption.SetTextSize(.04);
     res_caption.SetNDC(kTRUE);
     res_caption.DrawLatex(.15, .8, res_text);
+
+    return resolution;
 }

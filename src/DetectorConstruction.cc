@@ -338,11 +338,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // See documentation for exact fiber placement
 
   G4LogicalVolume* ECal_FiberCladdingLV[fNumECalBlocks][fNumECalBlocks];
-  G4VSolid* ECal_FiberCladdingS = new G4Tubs("ECal_FiberCladdingSolid", ECal_Fiber_r - .03*2.0*ECal_Fiber_r, ECal_Fiber_r, ECal_Thickness/2, 0.0, 360.0*deg);
+  G4VSolid* ECal_FiberCladdingS = new G4Tubs("ECal_FiberCladdingSolid", ECal_Fiber_r - .03*ECal_Fiber_r, ECal_Fiber_r, ECal_Thickness/2, 0.0, 360.0*deg);
 
   // Fiber core
   G4LogicalVolume* ECal_FiberLV[fNumECalBlocks][fNumECalBlocks];
-  G4VSolid* ECal_FiberS = new G4Tubs("ECal_FiberSolid", 0.0, ECal_Fiber_r - .03*2.0*ECal_Fiber_r, ECal_Thickness/2, 0.0, 360.0*deg);
+  G4VSolid* ECal_FiberS = new G4Tubs("ECal_FiberSolid", 0.0, ECal_Fiber_r - .03*ECal_Fiber_r, ECal_Thickness/2, 0.0, 360.0*deg);
   
   for(G4int i = 0; i < fNumECalBlocks; i++)
   {

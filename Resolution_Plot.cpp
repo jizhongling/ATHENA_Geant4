@@ -7,8 +7,13 @@
 #include "TF1.h"
 #include "TLegend.h"
 #include "TAxis.h"
+#include "TSystem.h"
+
+Double_t Resolution(std::string particle = "e-", Double_t energy = 1.0);
 
 void Resolution_Plot() {
+
+  gSystem->Load("Resolution_cpp.so");
 
     Double_t g4_beamE[7] = {1.0, 2.0, 3.0, 5.0, 10.0, 20.0, 30.0};
 	Double_t g4_beamE_piplus[14] = {1.0, 2.0, 3.0, 5.0, 10.0, 20.0, 30.0, 40., 50., 60., 70., 80., 90., 100.};
@@ -26,6 +31,9 @@ void Resolution_Plot() {
 	Double_t g4_res_piplus_5deg_QGSP_TC[num_QGSP] = {0.258816, 0.221997, 0.169287, 0.125666, 0.103886, 0.0909401, 0.0840076, 0.0780045, 0.0744322, 0.0707074, 0.0701562, 0.0689857, 0.0651987};
 	Double_t g4_res_piplus_5deg_QGSP_5[num_QGSP] = {0.265107, 0.229308, 0.197124, 0.147366, 0.128219, 0.117786, 0.112769, 0.108098, 0.105276, 0.09942, 0.098145, 0.098001, 0.09346}; // birk = 0.5
 	Double_t g4_res_piplus_0deg_QGSP[num_QGSP] = {0.29084, 0.252189, 0.189356, 0.135934, 0.10828, 0.098379, 0.091766, 0.0849641, 0.0847324, 0.078582, 0.0767795, 0.0761457, 0.0732845}; //zdg
+        Double_t g4_res_piplus_5deg_QGSP_zji[num_QGSP] = {};
+        for(int ig=0; ig<num_QGSP; ig++)
+          g4_res_piplus_5deg_QGSP_zji[ig] = Resolution("pi+", g4_beamE_QGSP[ig]);
 
 	const Int_t num_CALICE = 7;
 	Double_t g4_beamE_CALICE[num_CALICE] = {10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 80.0};
@@ -243,7 +251,23 @@ void Resolution_Plot() {
 	gr_g4piplus_res_QGSP_TC->GetYaxis()->SetTitleOffset(1.4);
 
 
+	TGraphErrors* gr_g4piplus_res_QGSP_zji = new TGraphErrors(num_QGSP, g4_beamE_QGSP, g4_res_piplus_5deg_QGSP_zji, 0, 0);
+	gr_g4piplus_res_QGSP_zji->SetMarkerStyle(kOpenCircle);
+	gr_g4piplus_res_QGSP_zji->SetMarkerColor(kRed);
+	gr_g4piplus_res_QGSP_zji->SetMarkerSize(2);
+	gr_g4piplus_res_QGSP_zji->SetLineStyle(2);
+	gr_g4piplus_res_QGSP_zji->SetLineColor(kMagenta);
 
+	TF1* f_g4piplus_fit_QGSP_zji = new TF1("f_g4piplus_fit_QGSP_zji", "sqrt(([1]/sqrt(x))**2 + [0]**2)", 10, 102);
+	// f_g4piplus_fit_QGSP->SetParameter(0, .038);
+	// f_g4piplus_fit_QGSP->SetParameter(1, .43);
+	f_g4piplus_fit_QGSP_zji->SetLineStyle(2);
+	f_g4piplus_fit_QGSP_zji->SetLineColor(kMagenta);
+
+	gr_g4piplus_res_QGSP_zji->Fit(f_g4piplus_fit_QGSP_zji, "R");
+	gr_g4piplus_res_QGSP_zji->GetXaxis()->SetTitle("Beam Energy (GeV)");
+	gr_g4piplus_res_QGSP_zji->GetYaxis()->SetTitle("Resolution  #frac{#DeltaE}{E}");
+	gr_g4piplus_res_QGSP_zji->GetYaxis()->SetTitleOffset(1.4);
 
 
 	TGraphErrors* gr_g4piplus_res_CALICE = new TGraphErrors(num_CALICE, g4_beamE_CALICE, g4_res_piplus_CALICE, 0, 0);
@@ -302,6 +326,7 @@ void Resolution_Plot() {
 	// gr_g4piplus_res_QGSP_5->Draw("sameP");
 	//gr_g4elec_res_QGSP->Draw("sameP");
 	gr_g4piplus_res_QGSP_TC->Draw("sameP");
+	gr_g4piplus_res_QGSP_zji->Draw("sameP");
 	// gr_g4piplus_res_CALICE->Draw("sameP");
 	CALICE_data->Draw("same");
 
@@ -326,6 +351,10 @@ void Resolution_Plot() {
 	TString piplus_text_QGSP_TC;
 	piplus_text_QGSP_TC.Form("G4 #pi^{+}, QGSP_BERT kB=.126 TC, #frac{#DeltaE}{E} =  #frac{%0.3f}{#sqrt{E}} #oplus %0.3f", f_g4piplus_fit_QGSP_TC->GetParameter(1), f_g4piplus_fit_QGSP_TC->GetParameter(0));
 	leg->AddEntry(gr_g4piplus_res_QGSP_TC, piplus_text_QGSP_TC, "LP");
+
+	TString piplus_text_QGSP_zji;
+	piplus_text_QGSP_zji.Form("G4 #pi^{+}, QGSP_BERT kB=.126 zji, #frac{#DeltaE}{E} =  #frac{%0.3f}{#sqrt{E}} #oplus %0.3f", f_g4piplus_fit_QGSP_zji->GetParameter(1), f_g4piplus_fit_QGSP_zji->GetParameter(0));
+	leg->AddEntry(gr_g4piplus_res_QGSP_zji, piplus_text_QGSP_zji, "LP");
 
 	TString piplus_text_QGSP;
 	piplus_text_QGSP.Form("G4 #pi^{+}, QGSP_BERT kB=.126, #frac{#DeltaE}{E} =  #frac{%0.3f}{#sqrt{E}} #oplus %0.3f", f_g4piplus_fit_QGSP->GetParameter(1), f_g4piplus_fit_QGSP->GetParameter(0));
