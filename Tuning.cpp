@@ -121,7 +121,6 @@ void Tuning(Int_t id = 0, Int_t smear = 0)
     Double_t total_energy = ECal_energy;  // + HCal_energy;
     h_TotalEdep->Fill(total_energy);
   }
-  h_TotalEdep->SetTitle("");
 
   TCanvas* c_Resolution = new TCanvas("c_Resolution", "", 1000, 1000);
   h_TotalEdep->Draw();
