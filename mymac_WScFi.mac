@@ -9,6 +9,7 @@
 /gps/particle pi+
 /gps/ene/type Mono
 /gps/ene/mono 1 GeV
+#/gps/pos/type Point
 /gps/pos/type Plane
 /gps/pos/shape Square
 /gps/pos/rot1 1 0 0
@@ -20,6 +21,9 @@
 #/gps/direction 0 .08715574275 .9961946981 
 # 20 deg
 /gps/direction 0 .3420201433 .9396926208 
+#/gps/ang/type iso
+#/gps/ang/mintheta 160 deg
+#/gps/ang/maxtheta 160 deg
 # 0 deg
 #/gps/direction 0 0 1.0
 

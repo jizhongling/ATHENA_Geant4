@@ -1,5 +1,9 @@
 #include <iostream>
 #include <string>
+#include <tuple>
+#include <vector>
+#include <map>
+#include <ROOT/TProcessExecutor.hxx>
 #include "TTree.h"
 #include "TLeaf.h"
 #include "TCanvas.h"
@@ -11,51 +15,43 @@
 #include "TLatex.h"
 #include "TGraph.h"
 #include "TRandom.h"
-#include <map>
-#include <vector>
-#include <ROOT/TProcessExecutor.hxx>
-#include <tuple>
 
 std::map<Double_t, Double_t> Beam_MaxEnergy = {{1.0, 100}, {2.0, 100}, {3.0, 150}, {5.0, 200}, {10.0, 400}, {20.0, 700}, {30.0, 1000}, {40.0, 1500}, {50.0, 2000}, {60., 2500}, {70., 3000}, {80., 3500}, {90., 4000}, {100., 4500}};
 
-double threshold = 6.1;
+Double_t threshold = 6.1;
 
-double reco(double E0)
+Double_t reco(Double_t E0)
 {
-  double E = E0;
+  Double_t E = E0;
   if(E0 < threshold) return 0;
   else{ 
-    double a = 0.1;
-    double b = 0.0015;
-    double sigma =  E* TMath::Sqrt(a*a/E +b*b) ;
-    double random = gRandom->Gaus(E*0.03,sigma); 
+    Double_t a = 0.1;
+    Double_t b = 0.0015;
+    Double_t sigma =  E* TMath::Sqrt(a*a/E +b*b);
+    Double_t random = gRandom->Gaus(E*0.03,sigma);
     E = random;
     return E;
   }
 }
 
-void Tuning(Int_t id = 0, Int_t smear = 0)
+void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string tag = "e-_10GeV_20deg", std::string particle = "e-")
 {
-  std::string particle = "e-";
-  std::string dd_particle = "electron";
-  Double_t energy = 10.;
-
   TString file_name;
   Double_t max_energy = 0.;
   switch(id)
   {
     case 0:
-      file_name.Form("%s_QGSP/%s_%0.0fGeV_20deg.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s_QGSP/%s.root", particle.c_str(), tag.c_str());
       max_energy = Beam_MaxEnergy[energy];
       break;
     case 1:
-      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/sim_endcap_%s.root", dd_particle.c_str());
+      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/sim_%s.root", tag.c_str());
       if(smear) max_energy = Beam_MaxEnergy[energy];
-      else max_energy = energy*1e3;
+      else max_energy = energy*1.1*1e3;
       break;
     case 2:
-      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/rec_endcap_%s.root", dd_particle.c_str());
-      max_energy = Beam_MaxEnergy[energy]*3;
+      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/rec_%s.root", tag.c_str());
+      max_energy = energy*1.1*1e3;
       break;
   }
   std::cout<<"Opening "<<file_name<<std::endl;
@@ -74,8 +70,9 @@ void Tuning(Int_t id = 0, Int_t smear = 0)
   Int_t num_events = (Int_t) Total_tree->GetEntries();
   std::cout<<"Number of events: "<<num_events<<std::endl;
 
-  Double_t ECalEdepD[1000], HCalEdepD[1000];
-  Float_t ECalEdepF[1000], HCalEdepF[1000];
+  const Int_t max_track = 1000;
+  Double_t ECalEdepD[max_track], HCalEdepD[max_track];
+  Float_t ECalEdepF[max_track], HCalEdepF[max_track];
   switch(id)
   {
     case 0:
@@ -104,16 +101,16 @@ void Tuning(Int_t id = 0, Int_t smear = 0)
         HCal_energy = HCalEdepD[0];
         break;
       case 1:
-        for(Int_t j=0; j< Total_tree->GetLeaf("EcalEndcapPHits.energyDeposit")->GetLen(); j++)
+        for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHits.energyDeposit")->GetLen(); j++)
           ECal_energy += ECalEdepD[j]*1e3;
-        for(Int_t j=0; j< Total_tree->GetLeaf("HcalEndcapPHits.energyDeposit")->GetLen(); j++)
+        for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHits.energyDeposit")->GetLen(); j++)
           HCal_energy += HCalEdepD[j]*1e3;
         if(smear) ECal_energy = reco(ECal_energy);
         break;
       case 2:
-        for(Int_t j=0; j< Total_tree->GetLeaf("EcalEndcapPHitsReco.energy")->GetLen(); j++)
+        for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHitsReco.energy")->GetLen(); j++)
           ECal_energy += ECalEdepF[j]*1e3;
-        for(Int_t j=0; j< Total_tree->GetLeaf("HcalEndcapPHitsReco.energy")->GetLen(); j++)
+        for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHitsReco.energy")->GetLen(); j++)
           HCal_energy += HCalEdepF[j]*1e3;
         break;
     }
