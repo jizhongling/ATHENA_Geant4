@@ -81,7 +81,7 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
       break;
     case 1:
       Total_tree->SetBranchAddress("EcalEndcapPHits.energyDeposit", ECalEdepD);
-      Total_tree->SetBranchAddress("HcalEndcapPHits.energyDeposit", HCalEdepD);
+      //Total_tree->SetBranchAddress("HcalEndcapPHits.energyDeposit", HCalEdepD);
       break;
     case 2:
       Total_tree->SetBranchAddress("EcalEndcapPHitsReco.energy", ECalEdepF);
@@ -103,8 +103,8 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
       case 1:
         for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHits.energyDeposit")->GetLen(); j++)
           ECal_energy += ECalEdepD[j]*1e3;
-        for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHits.energyDeposit")->GetLen(); j++)
-          HCal_energy += HCalEdepD[j]*1e3;
+        //for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHits.energyDeposit")->GetLen(); j++)
+        //  HCal_energy += HCalEdepD[j]*1e3;
         if(smear) ECal_energy = reco(ECal_energy);
         break;
       case 2:
