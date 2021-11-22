@@ -16,7 +16,8 @@
 /gps/pos/rot2 0 1 0
 /gps/pos/halfx 0.25 cm
 /gps/pos/halfy 0.25 cm
-/gps/pos/centre 2.5025 2.4747 -8.5 cm 
+#/gps/pos/centre 2.5025 2.4747 -8.5 cm 
+/gps/pos/centre 0 0 -214.5 cm 
 # 5 deg
 #/gps/direction 0 .08715574275 .9961946981 
 # 20 deg

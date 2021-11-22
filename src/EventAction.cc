@@ -119,20 +119,19 @@ void EventAction::EndOfEventAction(const G4Event* event)
   G4double ECal_Edep = 0.; // Total Edep for ECal
   G4int ECal_hits = 0; // Total hits for ECal
 
-  G4int ECalHCID = G4SDManager::GetSDMpointer()->GetCollectionID("ECalHitsCollection");
-  auto ECalHC = GetHitsCollection(ECalHCID, event);
-  auto ECalHit = (*ECalHC)[ECalHC->entries()-1]; // entries()-1 kept track of information for whole block
-  ECal_Edep += ECalHit->GetEdep();
-  ECal_hits += ECalHit->GetNumHits();
+  //G4int ECalHCID = G4SDManager::GetSDMpointer()->GetCollectionID("ECalHitsCollection");
+  //auto ECalHC = GetHitsCollection(ECalHCID, event);
+  //auto ECalHit = (*ECalHC)[ECalHC->entries()-1]; // entries()-1 kept track of information for whole block
+  //ECal_Edep += ECalHit->GetEdep();
+  //ECal_hits += ECalHit->GetNumHits();
 
   // Ntuple with id 1 holds ECal information
-  analysisManager->FillNtupleDColumn(1, 0, ECalHit->GetEdep());
-  analysisManager->FillNtupleIColumn(1, 1, 0);
-  analysisManager->FillNtupleIColumn(1, 2, 0);
-  analysisManager->FillNtupleIColumn(1, 3, eventID);
-  analysisManager->AddNtupleRow(1);
+  //analysisManager->FillNtupleDColumn(1, 0, ECalHit->GetEdep());
+  //analysisManager->FillNtupleIColumn(1, 1, 0);
+  //analysisManager->FillNtupleIColumn(1, 2, 0);
+  //analysisManager->FillNtupleIColumn(1, 3, eventID);
+  //analysisManager->AddNtupleRow(1);
 
-  /*
   for(G4int i = 0; i < NumECalBlocks; i++)
   {
     for(G4int j = 0; j < NumECalBlocks; j++)
@@ -152,7 +151,6 @@ void EventAction::EndOfEventAction(const G4Event* event)
       analysisManager->AddNtupleRow(1);
     }
   }
-  */
   
   // fill ntuple
   

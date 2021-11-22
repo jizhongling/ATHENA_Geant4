@@ -7,6 +7,7 @@
 #include "TTree.h"
 #include "TLeaf.h"
 #include "TCanvas.h"
+#include "TStyle.h"
 #include "TF1.h"
 #include "TH1.h"
 #include "TString.h"
@@ -34,26 +35,30 @@ Double_t reco(Double_t E0)
   }
 }
 
-void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string tag = "e-_10GeV_20deg", std::string particle = "e-")
+void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string particle = "e-")
 {
   TString file_name;
   Double_t max_energy = 0.;
   switch(id)
   {
     case 0:
-      file_name.Form("%s_QGSP/%s.root", particle.c_str(), tag.c_str());
+      file_name.Form("%s_QGSP/%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
       max_energy = Beam_MaxEnergy[energy];
       break;
     case 1:
-      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/sim_%s.root", tag.c_str());
-      if(smear) max_energy = Beam_MaxEnergy[energy];
-      else max_energy = energy*1.1*1e3;
+      file_name.Form("../WScFi/WScFi_Mixture/%s_FTFP/%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
     case 2:
-      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/rec_%s.root", tag.c_str());
-      max_energy = energy*1.1*1e3;
+      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/%s_FTFP/sim_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
+      break;
+    case 3:
+      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/%s_FTFP/rec_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
   }
+  max_energy *= 1.5;
   std::cout<<"Opening "<<file_name<<std::endl;
   TFile* data_file = new TFile(file_name);
 
@@ -63,6 +68,9 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
   {
     case 0:
       Total_tree = (TTree*) data_file->Get("EdepTotal");
+      break;
+    case 1:
+      Total_tree = (TTree*) data_file->Get("B4");
       break;
     default:
       Total_tree = (TTree*) data_file->Get("events");
@@ -80,10 +88,13 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
       Total_tree->SetBranchAddress("HCal_Edep_Total", &HCalEdepD[0]);
       break;
     case 1:
+      Total_tree->SetBranchAddress("Eabs", &ECalEdepD[0]);
+      break;
+    case 2:
       Total_tree->SetBranchAddress("EcalEndcapPHits.energyDeposit", ECalEdepD);
       //Total_tree->SetBranchAddress("HcalEndcapPHits.energyDeposit", HCalEdepD);
       break;
-    case 2:
+    case 3:
       Total_tree->SetBranchAddress("EcalEndcapPHitsReco.energy", ECalEdepF);
       Total_tree->SetBranchAddress("HcalEndcapPHitsReco.energy", HCalEdepF);
       break;
@@ -101,15 +112,18 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
         HCal_energy = HCalEdepD[0];
         break;
       case 1:
-        for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHits.energyDeposit")->GetLen(); j++)
-          ECal_energy += ECalEdepD[j]*1e3;
-        //for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHits.energyDeposit")->GetLen(); j++)
-        //  HCal_energy += HCalEdepD[j]*1e3;
-        if(smear) ECal_energy = reco(ECal_energy);
+        for(Int_t j=0; j<Total_tree->GetLeaf("Eabs")->GetLen(); j++)
+          ECal_energy += smear ? reco(ECalEdepD[j]) : ECalEdepD[j];
         break;
       case 2:
+        for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHits.energyDeposit")->GetLen(); j++)
+          ECal_energy += smear ? reco(ECalEdepD[j]*1e3) : ECalEdepD[j]*1e3;
+        //for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHits.energyDeposit")->GetLen(); j++)
+        //  HCal_energy += HCalEdepD[j]*1e3;
+        break;
+      case 3:
         for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHitsReco.energy")->GetLen(); j++)
-          ECal_energy += ECalEdepF[j]*1e3;
+          ECal_energy += smear ? reco(ECalEdepF[j]*1e3) : ECalEdepF[j]*1e3;
         for(Int_t j=0; j<Total_tree->GetLeaf("HcalEndcapPHitsReco.energy")->GetLen(); j++)
           HCal_energy += HCalEdepF[j]*1e3;
         break;
@@ -120,6 +134,7 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
   }
 
   TCanvas* c_Resolution = new TCanvas("c_Resolution", "", 1000, 1000);
+  gStyle->SetOptFit(1111);
   h_TotalEdep->Draw();
   h_TotalEdep->GetXaxis()->SetTitle("Edep (MeV)");
   h_TotalEdep->GetYaxis()->SetTitle("Number of Events");
@@ -140,17 +155,19 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string ta
   switch(id)
   {
     case 0:
-      info_text += " in Geant4";
+      info_text += " in ScFi";
       break;
     case 1:
-      info_text += " in DD4hep";
-      if(smear)
-        info_text += " w/ smearing";
+      info_text += " in Mixture";
       break;
     case 2:
+      info_text += " in DD4hep";
+      break;
+    case 3:
       info_text += " in Juggler";
       break;
   }
+  if(smear) info_text += " w/ smearing";
   h_TotalEdep->SetTitle(info_text);
 
   TString res_text;

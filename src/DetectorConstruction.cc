@@ -96,6 +96,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   auto worldSizeXY = 10 * HCal_X;
   auto worldSizeZ  = 2. * (HCal_Thickness + ECal_Thickness); // Arbitrary sizes larger than the detector
+  //auto worldSizeXY = 10*m;
+  //auto worldSizeZ  = 10*m; // Arbitrary sizes larger than the detector
 
   // Get materials
   auto DefaultMaterial = G4Material::GetMaterial("G4_Galactic");
@@ -108,9 +110,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   ECalAbsorberMaterial->AddElement(elW, 97.0*perCent); // Use mass fraction
   ECalAbsorberMaterial->AddMaterial(ActiveMaterial, 3.0*perCent); // Use mass fraction
 
-  G4Material* ECal_abs_mat = new G4Material("ECal_fiber_mat", 10.15*g/cm3, 2);
-  ECal_abs_mat->AddElement(elW, 94.8*perCent); // Use mass fraction
-  ECal_abs_mat->AddMaterial(ActiveMaterial, 5.2*perCent); // Use mass fraction
+  //G4Material* ECal_abs_mat = new G4Material("ECal_fiber_mat", 10.15*g/cm3, 2);
+  //ECal_abs_mat->AddElement(elW, 94.8*perCent); // Use mass fraction
+  //ECal_abs_mat->AddMaterial(ActiveMaterial, 5.2*perCent); // Use mass fraction
 
   G4MaterialPropertiesTable* MaterialTable = new G4MaterialPropertiesTable();
   ActiveMaterial->SetMaterialPropertiesTable(MaterialTable);
@@ -262,11 +264,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
 
   // ECal mixture tower structure
-  G4VSolid* ECalS = new G4Tubs("ECalSolid", 200.0*mm, 1542*mm, ECal_Thickness/2, 0, CLHEP::twopi);
-  G4LogicalVolume* ECalLV = new G4LogicalVolume(ECalS, ECal_abs_mat, "ECalLogical");
-  new G4PVPlacement(0, G4ThreeVector(0, 0, 0), ECalLV, "ECalPhysical", WorldLV, false, 0, fCheckOverlaps);
+  //G4VSolid* ECalS = new G4Tubs("ECalSolid", 0.0*mm, 1542*mm, ECal_Thickness/2, 0, CLHEP::twopi);
+  //G4LogicalVolume* ECalLV = new G4LogicalVolume(ECalS, ECal_abs_mat, "ECalLogical");
+  //new G4PVPlacement(0, G4ThreeVector(0, 0, 0), ECalLV, "ECalPhysical", WorldLV, false, 0, fCheckOverlaps);
 
-  /*
   // ECal Blocks
   // First ECal block has origin at ((-2.*HCal_X + ECal_X/2 + Clearance_Gap), (2.*HCal_Y - ECal_Y/2 - Clearance_Gap)), which is top right HCal block shifted by clearance gap
   G4LogicalVolume* ECalLV[fNumECalBlocks][fNumECalBlocks];
@@ -293,7 +294,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
     }
   }
-  */
 
   // Every 2x2 blocks has glue in the middle
 
@@ -302,7 +302,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     g g
     □ □
   */
-  /*
   G4LogicalVolume* ECal_HorizGlueLV[fNumECalBlocks][fNumECalBlocks/2]; 
   G4VSolid* ECal_HorizGlueS = new G4Box("ECal_HorizGlueSolid", ECal_X/2, ECal_Glue_XY/2, ECal_Thickness/2);
 
@@ -320,7 +319,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
       new G4PVPlacement(0, G4ThreeVector(x0 + i_factor*HCal_X, y0 - j*HCal_Y, 0), ECal_HorizGlueLV[i][j], nameHolder, WorldLV, false, 0, fCheckOverlaps);
     } 
   }
-  */
 
     /* Vertical glue between ECal blocks 
     glue running down middle of 2x2 blocks
@@ -329,7 +327,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     □ g □
   */
 
-  /*
   G4LogicalVolume* ECal_VertGlueLV[fNumECalBlocks/2][fNumECalBlocks/2];
   G4VSolid* ECal_VertGlueS = new G4Box("ECal_VertGlue", ECal_Glue_XY/2, (2*ECal_Y + ECal_Glue_XY)/2, ECal_Thickness/2);
 
@@ -389,7 +386,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     }
 
   }
-  */
 
   G4cout<<"Finished Geometry construction."<<G4endl;
             
@@ -450,9 +446,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
       
   }
 
-  ECalLV->SetVisAttributes(BlueVisAtt);
+  //ECalLV->SetVisAttributes(BlueVisAtt);
 
-  /*
   for(G4int i = 0; i < fNumECalBlocks; i++)
   {
     for(G4int j = 0; j < fNumECalBlocks; j++)
@@ -473,7 +468,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
       }
     }
   }
-  */
 
   // Always return the physical World
   return worldPV;
@@ -505,11 +499,10 @@ void DetectorConstruction::ConstructSDandField()
     }
   }
 
-  CalorimeterSD* ECalSD = new CalorimeterSD("ECalSD", "ECalHitsCollection", 1);
-  G4SDManager::GetSDMpointer()->AddNewDetector(ECalSD);
-  SetSensitiveDetector("ECalLogical", ECalSD);
+  //CalorimeterSD* ECalSD = new CalorimeterSD("ECalSD", "ECalHitsCollection", 1);
+  //G4SDManager::GetSDMpointer()->AddNewDetector(ECalSD);
+  //SetSensitiveDetector("ECalLogical", ECalSD);
 
-  /*
   CalorimeterSD* ECalSD[fNumECalBlocks][fNumECalBlocks];
   for(G4int i = 0; i < fNumECalBlocks; i++)
   {
@@ -524,7 +517,6 @@ void DetectorConstruction::ConstructSDandField()
       SetSensitiveDetector(DetectorNameHolder, ECalSD[i][j]);
     }
   }
-  */
 
   // Magnetic field
   //
