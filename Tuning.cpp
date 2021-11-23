@@ -112,8 +112,7 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string pa
         HCal_energy = HCalEdepD[0];
         break;
       case 1:
-        for(Int_t j=0; j<Total_tree->GetLeaf("Eabs")->GetLen(); j++)
-          ECal_energy += smear ? reco(ECalEdepD[j]) : ECalEdepD[j];
+        ECal_energy = smear ? reco(ECalEdepD[0]) : ECalEdepD[0];
         break;
       case 2:
         for(Int_t j=0; j<Total_tree->GetLeaf("EcalEndcapPHits.energyDeposit")->GetLen(); j++)
