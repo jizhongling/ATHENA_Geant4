@@ -50,11 +50,11 @@ void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string pa
       max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
     case 2:
-      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/%s_FTFP/sim_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("../physics_benchmarks/%s_FTFP/sim_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
       max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
     case 3:
-      file_name.Form("../reconstruction_benchmarks/benchmarks/clustering/%s_FTFP/rec_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("../physics_benchmarks/%s_FTFP/rec_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
       max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
   }
