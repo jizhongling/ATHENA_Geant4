@@ -37,24 +37,25 @@ Double_t reco(Double_t E0)
 
 void Tuning(Int_t id = 0, Int_t smear = 0, Double_t energy = 10., std::string particle = "e-")
 {
+  const char *data_dir = "/gpfs/mnt/gpfs02/phenix/spin/spin1/phnxsp01/zji/data/eic";
   TString file_name;
   Double_t max_energy = 0.;
   switch(id)
   {
     case 0:
-      file_name.Form("%s_QGSP/%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s/%s_QGSP/%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
       max_energy = Beam_MaxEnergy[energy];
       break;
     case 1:
-      file_name.Form("../WScFi/WScFi_Mixture/%s_FTFP/%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s/%s_FTFP/%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
       max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
     case 2:
-      file_name.Form("../physics_benchmarks/%s_FTFP/sim_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s/%s_FTFP/sim_%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
       max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
     case 3:
-      file_name.Form("../physics_benchmarks/%s_FTFP/rec_%s_%gGeV.root", particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s/%s_FTFP/rec_%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
       max_energy = smear ? Beam_MaxEnergy[energy] : energy*1e3;
       break;
   }
