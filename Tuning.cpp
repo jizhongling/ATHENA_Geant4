@@ -144,6 +144,9 @@ void Tuning(Int_t id = 0, Double_t energy = 10., Double_t angle = 10., std::stri
   h_TotalEdep->GetYaxis()->SetTitle("Number of Events");
 
   TF1* f_gaus = new TF1("f_gaus", "gaus", max_energy/5, max_energy);
+  f_gaus->SetParameter(0, 0.1*num_events);
+  f_gaus->SetParameter(1, 0.8*max_energy);
+  f_gaus->SetParameter(2, 0.1*max_energy);
   h_TotalEdep->Fit(f_gaus, "");
 
   Double_t mean = f_gaus->GetParameter(1);
