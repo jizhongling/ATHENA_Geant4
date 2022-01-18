@@ -345,7 +345,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   // Fibers
   // Non-sensitive cladding around each fiber
-  // Cladding is 3% the total fiber thickness, i.e. .03*fiber radius
+  // Cladding is 3% the total fiber thickness, i.e. Thickness = .03*fiber diameter
   // See documentation for exact fiber placement
 
   G4LogicalVolume* ECal_FiberCladdingLV[fNumECalBlocks][fNumECalBlocks];
