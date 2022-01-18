@@ -32,29 +32,17 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   public:
     DetectorConstruction();
     virtual ~DetectorConstruction();
-
-  public:
     virtual G4VPhysicalVolume* Construct();
     virtual void ConstructSDandField();
-    inline static G4int GetHCalLayers() {return fNumHCalLayers;}
-    inline static G4int GetHCalTowers() {return fNumHCalTowers;}
-    inline static G4int GetECalBlocks() {return fNumECalBlocks;}
 
   private:
     // methods
-    //
     void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
   
     // data members
-    //
-    static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger; 
-                                      // magnetic field messenger
-
+    static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger; // magnetic field messenger
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
-    const static G4int   fNumHCalLayers = 51;     // number of layers in each HCal tower
-    const static G4int   fNumHCalTowers = 6;      // fNumHCalTowers by fNumHCalTowers towers in HCal
-    const static G4int   fNumECalBlocks = 8;      // fNumECalBlocks by fNumECalBlocks blocks in ECal
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

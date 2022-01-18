@@ -30,7 +30,6 @@ RunAction::RunAction()
 
   // Book histograms, ntuple
 
-
   analysisManager->CreateNtuple("EdepTotal", "Edep");
   analysisManager->CreateNtupleDColumn("ECal_Edep_Total");
   analysisManager->CreateNtupleDColumn("HCal_Edep_Total");
@@ -42,7 +41,7 @@ RunAction::RunAction()
   analysisManager->CreateNtuple("ECalBlocks", "ECalBlocks");
   analysisManager->CreateNtupleDColumn("ECal_Edep_Block");
   analysisManager->CreateNtupleIColumn("ECal_BlockXid");
-  analysisManager->CreateNtupleIColumn("ECal_BlockY");
+  analysisManager->CreateNtupleIColumn("ECal_BlockYid");
   analysisManager->CreateNtupleIColumn("eventID");
   analysisManager->FinishNtuple();
 
@@ -57,6 +56,8 @@ RunAction::RunAction()
   analysisManager->CreateNtupleDColumn("HCal_Edep_Tile");
   analysisManager->CreateNtupleIColumn("HCal_Layerid");
   analysisManager->CreateNtupleIColumn("HCal_NumHits_Tile");
+  analysisManager->CreateNtupleIColumn("HCal_TowerXid");
+  analysisManager->CreateNtupleIColumn("HCal_TowerYid");
   analysisManager->CreateNtupleIColumn("eventID");
   analysisManager->FinishNtuple();
 

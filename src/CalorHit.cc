@@ -8,8 +8,6 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
-#include <iomanip>
-
 G4ThreadLocal G4Allocator<CalorHit>* CalorHitAllocator = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
