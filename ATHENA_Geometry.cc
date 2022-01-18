@@ -74,7 +74,7 @@ int main(int argc,char** argv)
   // Set mandatory initialization classes
   //
   runManager->SetUserInitialization(new DetectorConstruction());
-  runManager->SetUserInitialization(new QGSP_BERT);
+  runManager->SetUserInitialization(new FTFP_BERT_HP);
   runManager->SetUserInitialization(new ActionInitialization());
   
   // Initialize visualization
