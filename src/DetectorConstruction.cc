@@ -9,6 +9,7 @@
 
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+//#include "G4AssemblyVolume.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVReplica.hh"
@@ -107,6 +108,14 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto ActiveMaterial = G4Material::GetMaterial("G4_POLYSTYRENE");
   auto CladdingMaterial = G4Material::GetMaterial("G4_PLEXIGLASS");
 
+  //G4Element* elH = new G4Element("Hydrogen", "H", 1., 1.00794*g/mole);
+  //G4Element* elC = new G4Element("Carbon", "C", 6., 12.0107*g/mole);
+  //G4Material* ActiveMaterial = new G4Material("DD4HEP_POLYSTYRENE", 1.06*g/cm3, 2);
+  //ActiveMaterial->AddElement(elH, 8);
+  //ActiveMaterial->AddElement(elC, 8);
+  //ActiveMaterial->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
+
+  //G4Element* elW = new G4Element("Tungsten", "W", 74., 183.842*g/mole);
   G4Element* elW = new G4Element("Tungsten", "W", 74., 183.85*g/mole);
   G4Material* ECalAbsorberMaterial = new G4Material("ECalAbsorberMaterial", 12.72*g/cm3, 2);
   ECalAbsorberMaterial->AddElement(elW, 97.0*perCent); // Use mass fraction
@@ -350,6 +359,22 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // Cladding is 3% the total fiber thickness, i.e. Thickness = .03*fiber diameter
   // See documentation for exact fiber placement
 
+  // Fiber layers
+  //const double edge_height = 0.460 + 0.820/2.;
+  //G4VSolid* ECalEdgeLayerS = new G4Box("ECalEdgeLayerSolid", ECal_X/2., edge_height/2., ECal_Thickness/2.);
+  //G4LogicalVolume* ECalTopLayerLV = new G4LogicalVolume(ECalEdgeLayerS, ECalAbsorberMaterial, "ECalTopLayerLogical");
+  //G4LogicalVolume* ECalBottomLayerLV = new G4LogicalVolume(ECalEdgeLayerS, ECalAbsorberMaterial, "ECalBottomLayerLogical");
+  //G4AssemblyVolume* ECalTopLayerLV = new G4AssemblyVolume();
+  //G4AssemblyVolume* ECalBottomLayerLV = new G4AssemblyVolume();
+
+  //G4VSolid* ECalLayerS = new G4Box("ECalLayerSolid", ECal_X/2., 0.820/2., ECal_Thickness/2.);
+  //G4LogicalVolume* ECalLayerLV[2];
+  //ECalLayerLV[0] = new G4LogicalVolume(ECalLayerS, ECalAbsorberMaterial, "ECalEvenLayerLogical");
+  //ECalLayerLV[1] = new G4LogicalVolume(ECalLayerS, ECalAbsorberMaterial, "ECalOddLayerLogical");
+  //G4AssemblyVolume* ECalLayerLV[2];
+  //ECalLayerLV[0] = new G4AssemblyVolume();
+  //ECalLayerLV[1] = new G4AssemblyVolume();
+
   G4LogicalVolume* ECal_FiberCladdingLV[NumECalBlocks][NumECalBlocks];
   G4VSolid* ECal_FiberCladdingS = new G4Tubs("ECal_FiberCladdingSolid", ECal_Fiber_r - .03*ECal_Fiber_r, ECal_Fiber_r, ECal_Thickness/2., 0.0, 360.0*deg);
 
@@ -373,6 +398,50 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         G4double x0 = ECal_X/2. - 0.23966;
         if(fiber_i % 2 != 0) x0 -= fiber_xspacing/2.;
         G4double y0 = (ECal_Y/2. - 0.46) - fiber_i*0.820;
+
+        //G4LogicalVolume *ECalLayerMotherLV;
+        //G4AssemblyVolume *ECalLayerMotherLV;
+        //double yshift;
+        //sprintf(nameHolder, "ECal_LayerPhysical%02d%02d%02d", i, j, fiber_i);
+        //if(fiber_i == 0)
+        //{
+        //  G4ThreeVector trans(0, ECal_Y/2. - edge_height/2., 0);
+        //  new G4PVPlacement(0, trans, ECalTopLayerLV, nameHolder, ECalLV[i][j], false, 0, false);
+        //  //ECalTopLayerLV->MakeImprint(ECalLV[i][j], trans, 0);
+        //  yshift = -edge_height/2. + 0.820/2.;
+        //  ECalLayerMotherLV = ECalTopLayerLV;
+        //}
+        //else if(fiber_i == ECal_Fiber_Rows - 1)
+        //{
+        //  G4ThreeVector trans(0, -ECal_Y/2. + edge_height/2., 0);
+        //  new G4PVPlacement(0, trans, ECalBottomLayerLV, nameHolder, ECalLV[i][j], false, 0, false);
+        //  //ECalBottomLayerLV->MakeImprint(ECalLV[i][j], trans, 0);
+        //  yshift = edge_height/2. - 0.820/2.;
+        //  ECalLayerMotherLV = ECalBottomLayerLV;
+        //}
+        //else
+        //{
+        //  G4ThreeVector trans(0, y0, 0);
+        //  new G4PVPlacement(0, trans, ECalLayerLV[fiber_i%2], nameHolder, ECalLV[i][j], false, 0, false);
+        //  //ECalLayerLV[fiber_i%2]->MakeImprint(ECalLV[i][j], trans, 0);
+        //  yshift = 0.;
+        //  ECalLayerMotherLV = ECalLayerLV[fiber_i%2];
+        //}
+
+        //if (fiber_i < 3 || fiber_i == ECal_Fiber_Rows - 1)
+        //  for(G4int fiber_j = 0; fiber_j < ECal_Fiber_Cols; fiber_j++)
+        //  {
+        //    G4ThreeVector trans(x0 - fiber_j*fiber_xspacing, yshift, 0);
+
+        //    sprintf(nameHolder, "ECal_FiberCladdingPhysical%02d%02d%02d%02d", i, j, fiber_i, fiber_j);
+        //    new G4PVPlacement(0, trans, ECal_FiberCladdingLV[i][j], nameHolder, ECalLayerMotherLV, false, 0, false);
+        //    //ECalLayerMotherLV->AddPlacedVolume(ECal_FiberCladdingLV[i][j], trans, 0);
+
+        //    sprintf(nameHolder, "ECal_FiberPhysical%02d%02d%02d%02d", i, j, fiber_i, fiber_j);
+        //    new G4PVPlacement(0, trans, ECal_FiberLV[i][j], nameHolder, ECalLayerMotherLV, false, 0, false);
+        //    //ECalLayerMotherLV->AddPlacedVolume(ECal_FiberLV[i][j], trans, 0);
+        //  }
+        //num_fibers_block += ECal_Fiber_Cols;
 
         for(G4int fiber_j = 0; fiber_j < ECal_Fiber_Cols; fiber_j++)
         {

@@ -44,22 +44,22 @@ void Tuning(Int_t id = 0, Double_t energy = 10., Double_t angle = 10., std::stri
   {
     case 0:
       // Geant4 with ScFi
-      file_name.Form("%s/%s_QGSP/%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s/%s_Geant4/%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
       max_energy = Beam_MaxEnergy[energy];
       break;
     case 1:
       // Geant4 with mixture
-      file_name.Form("%s/%s_FTFP/%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
+      file_name.Form("%s/%s_Mixture/%s_%gGeV.root", data_dir, particle.c_str(), particle.c_str(), energy);
       max_energy = Beam_MaxEnergy[energy];
       break;
     case 2:
       // DD4hep
-      file_name.Form("%s/%s_IslandClus_Sub/sim_%gGeV_%gdeg.root", data_dir, particle.c_str(), energy, angle);
+      file_name.Form("%s/%s_DD4hep/sim_%gGeV_%gdeg.root", data_dir, particle.c_str(), energy, angle);
       max_energy = Beam_MaxEnergy[energy];
       break;
     case 3:
       // Juggler
-      file_name.Form("%s/%s_IslandClus_Sub/rec_%gGeV_%gdeg.root", data_dir, particle.c_str(), energy, angle);
+      file_name.Form("%s/%s_DD4hep/rec_%gGeV_%gdeg.root", data_dir, particle.c_str(), energy, angle);
       max_energy = energy*1e3;
       break;
   }
